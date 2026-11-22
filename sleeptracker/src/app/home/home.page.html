@@ -1,20 +1,28 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
+    <ion-title>Sleep Tracker</ion-title>
+    </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class ="ion-padding">
+  <ion-button expand="block" shape="round" (click)="presentLogSleep()">
+    <ion-icon slot ="start" name="moon"></ion-icon>
+    Log sleep
+  </ion-button>
+  <ion-button expand="block" shape="round" (click)="presentLogSleepiness()">
+    <ion-icon slot="start" name="cafe"></ion-icon>
+    Log sleepiness
+</ion-button>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-list>
+    @for (data of allSleepData; track data.id) {
+      <ion-card>
+        <ion-card-header>
+        <ion-card-subtitle>{{data.dateString()}}</ion-card-subtitle>
+          <ion-card-title>{{data.summaryString()}}</ion-card-title>
+        </ion-card-header>
+      </ion-card>
+    }
+
+  </ion-list>
 </ion-content>

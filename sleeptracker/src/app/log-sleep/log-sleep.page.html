@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Log sleep</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h3>Went to bed</h3>
+  <ion-datetime presentation="date-time" [preferWheel]="true" [max]="now" [(ngModel)]="bedtime"></ion-datetime>
+
+  <h3>Woke up</h3>
+  <ion-datetime presentation="date-time" [preferWheel]="true" [max]="now" [(ngModel)]="wakeTime"></ion-datetime>
+
+  @if (errorMessage() != '') {
+    <ion-text color="danger">
+      <p>{{errorMessage()}}</p>
+    </ion-text>
+  }
+
+  <ion-button expand="block" shape="round" [disabled]="errorMessage() != ''" (click)="save()">Save</ion-button>
+  <ion-button expand="block" fill="clear" (click)="cancel()">Cancel</ion-button>
+</ion-content>
