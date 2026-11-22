@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SleepData } from '../data/sleep-data';
 import { OvernightSleepData } from '../data/overnight-sleep-data';
 import { StanfordSleepinessData } from '../data/stanford-sleepiness-data';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +12,35 @@ export class SleepService {
 	public static AllSleepData:SleepData[] = [];
 	public static AllOvernightData:OvernightSleepData[] = [];
 	public static AllSleepinessData:StanfordSleepinessData[] = [];
+	private storage:Storage = new Storage();
 
 	constructor() {
-		if(SleepService.LoadDefaultData) {
-			this.addDefaultData();
-		SleepService.LoadDefaultData = false;
 	}
+
+	// this loads the saved logs, and is called once when the home page opens
+	public async loadData() {
+		await this.storage.create();
+		var savedData = await this.storage.get('allSleepData');
+
+	// since this is first time opening the app, nothing is svaed yet
+	if (savedData == null) {
+		this.addDefaultData();
+		return;
+
+	}
+	// the storage only saves the values not the class methods, so each log 
+	// is rebuilt as an obj
+	for (var data of savedData) {
+		if (data.sleepStart != undefined) {
+			this.logOvernightData(new OvernightSleepData(new Date(data.sleepStart), new Date(data.sleepEnd)));
+		}else {
+			this.logSleepinessData(new StanfordSleepinessData(data.loggedValue, new Date(data.loggedAt)));
+		}
+		}
+	}
+
+	private async saveData() {
+		await this.storage.set('allSleepData', SleepService.AllSleepData);
 	}
 
 	private addDefaultData() {
@@ -41,10 +65,12 @@ export class SleepService {
 	public logOvernightData(sleepData:OvernightSleepData) {
 		SleepService.AllSleepData.push(sleepData);
 		SleepService.AllOvernightData.push(sleepData);
+		this.saveData();
 	}
 
 	public logSleepinessData(sleepData:StanfordSleepinessData) {
 		SleepService.AllSleepData.push(sleepData);
 		SleepService.AllSleepinessData.push(sleepData);
+		this.saveData();
 	}
 }

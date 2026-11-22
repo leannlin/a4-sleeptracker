@@ -21,7 +21,9 @@ export class HomePage {
 
 	}
 
-	ngOnInit() {
+	async ngOnInit() { 
+		// load the saved logs from storage b4 showing them
+		await this.sleepService.loadData();
 		console.log(this.allSleepData);
 	}
 
